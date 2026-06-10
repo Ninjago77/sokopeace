@@ -132,7 +132,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 1
-        y: 17
+        y: 18
         width: 11
         height: 12
       alignment: 0
@@ -154,7 +154,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 17
-        y: 17
+        y: 18
         width: 11
         height: 12
       alignment: 0
@@ -175,9 +175,9 @@ TextureImporter:
       name: Free Chicken Sprites_2
       rect:
         serializedVersion: 2
-        x: 0
-        y: 1
-        width: 13
+        x: 1
+        y: 2
+        width: 11
         height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -198,9 +198,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 17
-        y: 1
+        y: 2
         width: 11
-        height: 13
+        height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -219,9 +219,9 @@ TextureImporter:
       name: Free Chicken Sprites_4
       rect:
         serializedVersion: 2
-        x: 32
-        y: 1
-        width: 13
+        x: 33
+        y: 2
+        width: 11
         height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -242,9 +242,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 49
-        y: 1
+        y: 2
         width: 11
-        height: 13
+        height: 12
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -273,7 +273,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries:
       - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":3.0,"y":2.0},"gridSpriteSize":{"x":32.0,"y":16.0},"gridSpriteOffset":{"x":0.0,"y":12.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":11.0,"y":12.0},"gridSpriteOffset":{"x":1.0,"y":2.0},"gridSpritePadding":{"x":5.0,"y":4.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":1,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
       Free Chicken Sprites_0: 8560451000399327191
       Free Chicken Sprites_1: -172105496523427829

@@ -1,94 +1,71 @@
 using UnityEngine;
-using System.Collections;
 
 public class PushableChicken : MonoBehaviour
 {
     [Header("Settings")]
-    public float gridSize = 0.16f;
-    public float moveSpeed = 2.5f;
+    public Grid mapGrid;
+    [Tooltip("How fast it glides to the center of the cell AFTER you let go")]
+    public float snapSpeed = 2.5f;
 
-    private bool isMoving = false;
     private Rigidbody2D rb;
     private Animator animator;
-    private SpriteRenderer spriteRenderer; // Added to handle left/right flipping
+    private SpriteRenderer spriteRenderer;
+
+    private bool isSnapping = false;
+    private Vector2 targetSnapPosition;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
-        spriteRenderer = GetComponent<SpriteRenderer>(); // Grab the Sprite Renderer
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    void FixedUpdate()
     {
-        if (isMoving) return;
-
-        if (collision.gameObject.CompareTag("Player"))
+        // 1. Is Unity's physics engine moving the chicken? (Are we being pushed?)
+        if (rb.linearVelocity.magnitude > 0.2f)
         {
-            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+            isSnapping = false; // Cancel snapping if we get pushed again
 
-            if (player != null && player.GetMoveInput().magnitude > 0)
+            // Handle Animations & Sprite Flipping based on actual physical momentum
+            if (animator != null) animator.SetBool("isMoving", true);
+
+            if (rb.linearVelocity.x > 0.05f) spriteRenderer.flipX = false;
+            else if (rb.linearVelocity.x < -0.05f) spriteRenderer.flipX = true;
+        }
+        else
+        {
+            // 2. We have stopped moving. Turn off walk animation.
+            if (animator != null) animator.SetBool("isMoving", false);
+
+            // 3. Figure out the nearest grid cell to snap to
+            if (!isSnapping)
             {
-                TryPush(player.GetMoveInput());
+                Vector3Int nearestCell = mapGrid.WorldToCell(transform.position);
+                Vector3 center3D = mapGrid.GetCellCenterWorld(nearestCell);
+                targetSnapPosition = new Vector2(center3D.x, center3D.y);
+
+                // If we aren't already dead-center, start snapping
+                if (Vector2.Distance(transform.position, targetSnapPosition) > 0.001f)
+                {
+                    isSnapping = true;
+                }
             }
-        }
-    }
 
-    private void TryPush(Vector2 direction)
-    {
-        Vector2 targetPos = rb.position + (direction * gridSize);
+            // 4. Smoothly glide the rest of the way to the center
+            if (isSnapping)
+            {
+                Vector2 newPos = Vector2.MoveTowards(rb.position, targetSnapPosition, snapSpeed * Time.fixedDeltaTime);
+                rb.MovePosition(newPos);
 
-        Vector2 checkSize = new Vector2(gridSize * 0.9f, gridSize * 0.9f);
-        Collider2D[] hits = Physics2D.OverlapBoxAll(targetPos, checkSize, 0f);
-
-        foreach (Collider2D hit in hits)
-        {
-            if (hit.gameObject == this.gameObject || hit.CompareTag("Player")) continue;
-            if (hit.isTrigger) continue;
-
-            return; // Blocked!
-        }
-
-        // Path is clear! Start slide and pass the push direction to the routine
-        StartCoroutine(MoveRoutine(targetPos, direction));
-    }
-
-    private IEnumerator MoveRoutine(Vector2 targetPos, Vector2 direction)
-    {
-        isMoving = true;
-
-        // 1. Handle Sprite Flipping (Only updates on horizontal movement)
-        if (direction.x > 0)
-        {
-            spriteRenderer.flipX = false; // Face Right (default art direction)
-        }
-        else if (direction.x < 0)
-        {
-            spriteRenderer.flipX = true; // Flip to face Left
-        }
-        // If direction.x is 0 (moving Up/Down), we do nothing, preserving the last faced direction!
-
-        // 2. Start walking animation
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", true);
-        }
-
-        // Smoothly glide to the target
-        while (Vector2.Distance(rb.position, targetPos) > 0.005f)
-        {
-            Vector2 newPos = Vector2.MoveTowards(rb.position, targetPos, moveSpeed * Time.fixedDeltaTime);
-            rb.MovePosition(newPos);
-            yield return new WaitForFixedUpdate();
-        }
-
-        rb.position = targetPos;
-        isMoving = false;
-
-        // 3. Stop walking animation (returns to idle)
-        if (animator != null)
-        {
-            animator.SetBool("isMoving", false);
+                // Lock into place once we reach the center
+                if (Vector2.Distance(rb.position, targetSnapPosition) < 0.001f)
+                {
+                    rb.position = targetSnapPosition;
+                    isSnapping = false;
+                }
+            }
         }
     }
 }
