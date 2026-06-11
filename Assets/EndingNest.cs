@@ -28,7 +28,7 @@ public class EndingNest : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Chicken"))
+        if (collision.gameObject.CompareTag("Chicken") && !isFilled)
         {
             isFilled = true;
             spriteRenderer.sprite = eggNestSprite;

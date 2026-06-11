@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
 
     void Update()
     {
+        Debug.LogWarning(EndingNests.Length);
         if (!isLevelChanging && EndingNests.Length > 0 && EndingNests.All(nest => nest.isFilled))
         {
             isLevelChanging = true;
