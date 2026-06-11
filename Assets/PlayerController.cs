@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -65,6 +66,11 @@ public class PlayerController : MonoBehaviour
             targetSnapPosition = mapGrid.GetCellCenterWorld(currentCell);
             isSnapping = true;
         }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ReloadCurrentScene();
+        }
     }
 
     private void AddInput(Vector2 direction)
@@ -117,4 +123,13 @@ public class PlayerController : MonoBehaviour
 
     public Vector2 GetMoveInput() { return moveInput; }
     public bool IsSnapping() { return isSnapping; }
+
+    public void ReloadCurrentScene()
+    {
+        // Gets the index of the currently active scene
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+
+        // Reloads that scene using its index
+        SceneManager.LoadScene(currentSceneIndex);
+    }
 }
