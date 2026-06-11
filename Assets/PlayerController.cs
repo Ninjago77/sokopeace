@@ -1,11 +1,13 @@
-using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
+using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [Header("Movement Settings")]
     [SerializeField] private float moveSpeed = 2.5f;
-    [SerializeField] private Grid mapGrid;
+    private Grid mapGrid;
+    public bool CanMove { get; set; } = false;
 
     private Rigidbody2D rb;
     private Animator animator;
@@ -23,10 +25,19 @@ public class PlayerController : MonoBehaviour
 
         rb.gravityScale = 0f;
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        mapGrid = GameObject.FindGameObjectWithTag("MapGrid")?.GetComponent<Grid>();
+
+        Invoke("SET_CAN_MOVE_TRUE", 0.5f);
+    }
+
+    void SET_CAN_MOVE_TRUE()
+    {
+        CanMove = true;
     }
 
     void Update()
     {
+        if (!CanMove) return;
         if (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow)) AddInput(Vector2.up);
         if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.DownArrow)) AddInput(Vector2.down);
         if (Input.GetKeyDown(KeyCode.A) || Input.GetKeyDown(KeyCode.LeftArrow)) AddInput(Vector2.left);

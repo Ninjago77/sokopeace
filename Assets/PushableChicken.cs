@@ -1,9 +1,10 @@
+using UnityEditor.Timeline;
 using UnityEngine;
 
 public class PushableChicken : MonoBehaviour
 {
     [Header("Settings")]
-    public Grid mapGrid;
+    private Grid mapGrid;
     public float snapSpeed = 2.5f;
 
     private Rigidbody2D rb;
@@ -19,6 +20,7 @@ public class PushableChicken : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        mapGrid = GameObject.FindGameObjectWithTag("MapGrid")?.GetComponent<Grid>();
     }
 
     void OnCollisionStay2D(Collision2D collision)
