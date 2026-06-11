@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Chicken
   - MapGrid
+  - Nest
   layers:
   - Default
   - TransparentFX

@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6056647786537458591}
   m_Layer: 0
   m_Name: Nest
-  m_TagString: Untagged
+  m_TagString: Nest
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -153,3 +153,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: '::'
   nestSprite: {fileID: -744197992327247199, guid: 9e1cf1ba5af1a1c4a86fc04ae3daaa00, type: 3}
   eggNestSprite: {fileID: 4338608209347774417, guid: 9e1cf1ba5af1a1c4a86fc04ae3daaa00, type: 3}
+  isFilled: 0

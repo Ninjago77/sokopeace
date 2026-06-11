@@ -8,12 +8,18 @@ public class EndingNest : MonoBehaviour
     public Sprite nestSprite;
     public Sprite eggNestSprite;
     private SpriteRenderer spriteRenderer;
-    private bool isFilled;
+    public bool isFilled;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
+
+    private void Awake()
+    {
+        isFilled = false;
+
+    }
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        isFilled = false;
         spriteRenderer.sprite = nestSprite;
         mapGrid = GameObject.FindGameObjectWithTag("MapGrid")?.GetComponent<Grid>();
 
@@ -27,6 +33,7 @@ public class EndingNest : MonoBehaviour
             isFilled = true;
             spriteRenderer.sprite = eggNestSprite;
             collision.gameObject.GetComponent<SpriteRenderer>().enabled = false;
+            Destroy(collision.gameObject);
         }
     }
 
