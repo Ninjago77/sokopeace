@@ -4,7 +4,6 @@ public class PushableChicken : MonoBehaviour
 {
     [Header("Settings")]
     public Grid mapGrid;
-    [Tooltip("How fast it glides to the center of the cell AFTER you let go")]
     public float snapSpeed = 2.5f;
 
     private Rigidbody2D rb;
@@ -13,6 +12,7 @@ public class PushableChicken : MonoBehaviour
 
     private bool isSnapping = false;
     private Vector2 targetSnapPosition;
+    private bool isBeingPushed = false;
 
     void Start()
     {
@@ -21,14 +21,41 @@ public class PushableChicken : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            PlayerController player = collision.gameObject.GetComponent<PlayerController>();
+
+            if (player != null)
+            {
+                // Yield to the player if they are walking OR if they are snapping into our cell
+                if (player.GetMoveInput().magnitude > 0 || player.IsSnapping())
+                {
+                    isBeingPushed = true;
+                    isSnapping = false;
+                }
+                else
+                {
+                    isBeingPushed = false;
+                }
+            }
+        }
+    }
+
+    void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Player"))
+        {
+            isBeingPushed = false;
+        }
+    }
+
     void FixedUpdate()
     {
-        // 1. Is Unity's physics engine moving the chicken? (Are we being pushed?)
-        if (rb.linearVelocity.magnitude > 0.2f)
+        if (isBeingPushed)
         {
-            isSnapping = false; // Cancel snapping if we get pushed again
-
-            // Handle Animations & Sprite Flipping based on actual physical momentum
+            // Physics handles the push, we just play animations
             if (animator != null) animator.SetBool("isMoving", true);
 
             if (rb.linearVelocity.x > 0.05f) spriteRenderer.flipX = false;
@@ -36,33 +63,38 @@ public class PushableChicken : MonoBehaviour
         }
         else
         {
-            // 2. We have stopped moving. Turn off walk animation.
             if (animator != null) animator.SetBool("isMoving", false);
 
-            // 3. Figure out the nearest grid cell to snap to
             if (!isSnapping)
             {
-                Vector3Int nearestCell = mapGrid.WorldToCell(transform.position);
+                // Find nearest cell
+                Vector3Int nearestCell = mapGrid.WorldToCell(rb.position);
                 Vector3 center3D = mapGrid.GetCellCenterWorld(nearestCell);
                 targetSnapPosition = new Vector2(center3D.x, center3D.y);
 
-                // If we aren't already dead-center, start snapping
-                if (Vector2.Distance(transform.position, targetSnapPosition) > 0.001f)
+                if (Vector2.Distance(rb.position, targetSnapPosition) > 0.005f)
                 {
                     isSnapping = true;
                 }
             }
 
-            // 4. Smoothly glide the rest of the way to the center
             if (isSnapping)
             {
-                Vector2 newPos = Vector2.MoveTowards(rb.position, targetSnapPosition, snapSpeed * Time.fixedDeltaTime);
-                rb.MovePosition(newPos);
+                // EXACT VELOCITY SNAPPING (No more physics fighting!)
+                Vector2 diff = targetSnapPosition - rb.position;
+                float distance = diff.magnitude;
 
-                // Lock into place once we reach the center
-                if (Vector2.Distance(rb.position, targetSnapPosition) < 0.001f)
+                if (distance > 0.005f)
                 {
+                    float speedNeeded = distance / Time.fixedDeltaTime;
+                    float currentSpeed = Mathf.Min(speedNeeded, snapSpeed);
+                    rb.linearVelocity = diff.normalized * currentSpeed;
+                }
+                else
+                {
+                    // Reached Center
                     rb.position = targetSnapPosition;
+                    rb.linearVelocity = Vector2.zero;
                     isSnapping = false;
                 }
             }
