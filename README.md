@@ -2,6 +2,8 @@
 
 A Sokoban-type puzzle game oriented around a farmer organizing his animals.
 
+Play it here:- https://ninjago77.itch.io/sokopeace
+
 ## How to play?
 
 [WASD/Arrows]: To move
