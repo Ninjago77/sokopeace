@@ -12,6 +12,13 @@ Play it here:- https://ninjago77.itch.io/sokopeace
 [WASD/Arrows]: To move
 [Space]: To Restart/Reset
 
+## Credits
+
+Inspired by the game Sokoban.
+
+Pixel art assets by :- https://cupnooble.itch.io/
+[Permssion to use in non-commercial projects granted]
+
 ## AI Use
 
 The majority of the code was done by me, except for bug fixes, advanced scene changes, & coroutine functions.
